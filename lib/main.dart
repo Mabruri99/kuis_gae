@@ -1,118 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audioplayers.dart';
+import 'algorithm.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(Kuis());
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  var color = 'white';
-
-  Text Change({message}) {
-    return Text(
-      'hello $message',
-      style: TextStyle(fontSize: 30),
-    );
-  }
+class Kuis extends StatelessWidget {
+  const Kuis({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        appBar: AppBar(title: Change()),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  Change(message: 'Note 1');
-                  final player = AudioCache();
-                  player.play('note1.wav');
-                },
-                child: Text('note 1'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.red, padding: EdgeInsets.all(30)),
-              ),
+        backgroundColor: Colors.grey.shade900,
+        appBar: AppBar(
+          backgroundColor: Colors.green,
+          title: Center(
+            child: Text(
+              'Created By Ruri',
             ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note2.wav');
-                },
-                child: Text('note 2'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.red, padding: EdgeInsets.all(30)),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note3.wav');
-                },
-                child: Text('note 3'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.yellow,
-                    padding: EdgeInsets.all(30)),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note4.wav');
-                },
-                child: Text('note 4'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue, padding: EdgeInsets.all(30)),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note5.wav');
-                },
-                child: Text('note 5'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.green, padding: EdgeInsets.all(30)),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note6.wav');
-                },
-                child: Text('note 6'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.black, padding: EdgeInsets.all(30)),
-              ),
-            ),
-            Expanded(
-              child: TextButton(
-                onPressed: () {
-                  final player = AudioCache();
-                  player.play('note7.wav');
-                },
-                child: Text('note 7'),
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
-                    padding: EdgeInsets.all(30)),
-              ),
-            ),
-          ],
+          ),
+        ),
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(10),
+            child: KuisPage(),
+          ),
         ),
       ),
+    );
+  }
+}
+
+class KuisPage extends StatefulWidget {
+  @override
+  _KuisPageState createState() => _KuisPageState();
+}
+
+class _KuisPageState extends State<KuisPage> {
+  QuestionData algo = QuestionData();
+  int num = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          flex: 5,
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: Center(
+              child: Text(
+                algo.questionText(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.green,
+                textStyle: TextStyle(color: Colors.white),
+              ),
+              child: Text(
+                'True',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  algo.checkAnswer(true);
+                  if (algo.dis) {
+                    if (algo.benar > algo.salah) {
+                      Alert(
+                              context: context,
+                              title: "You Win",
+                              desc: "smart people")
+                          .show();
+                    } else {
+                      Alert(
+                              context: context,
+                              title: "You Lose",
+                              desc: "you are looser")
+                          .show();
+                    }
+                  }
+                });
+              },
+            ),
+          ),
+        ),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(15.0),
+            child: TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.red,
+                textStyle: TextStyle(color: Colors.white),
+              ),
+              child: Text(
+                'False',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
+              ),
+              onPressed: () {
+                setState(() {
+                  algo.checkAnswer(false);
+                  if (algo.dis) {
+                    if (algo.benar > algo.salah) {
+                      Alert(
+                              context: context,
+                              title: "You Win",
+                              desc: "Smart People")
+                          .show();
+                    } else {
+                      Alert(
+                              context: context,
+                              title: "You Lose",
+                              desc: "you are looser")
+                          .show();
+                    }
+                  }
+                });
+              },
+            ),
+          ),
+        ),
+        Row(
+          children: algo.scoreKeeper,
+        )
+      ],
     );
   }
 }
